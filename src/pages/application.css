@@ -1,0 +1,203 @@
+/* General container styling */
+.investor-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  /* Heading styles */
+  .investor-heading {
+    text-align: center;
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Info section styling */
+  .investor-info {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #555;
+  }
+  
+  /* Styling the links */
+  .links-container {
+    text-align: center;
+    font-size: 1.1em;
+  }
+  
+  .link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .link:hover {
+    color: #0056b3;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .investor-container {
+      padding: 15px;
+    }
+    .investor-heading {
+      font-size: 1.5em;
+    }
+  }
+  /* General container styling for the seller details */
+.seller-container {
+    background-color: #f0f4f8;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  /* Heading style */
+  .seller-heading {
+    text-align: center;
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: bold;
+  }
+  
+  /* Seller info section styling */
+  .seller-info p {
+    font-size: 1.2em;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  
+  /* Styling the links section */
+  .links-container {
+    text-align: center;
+    font-size: 1.1em;
+  }
+  
+  .link {
+    color: #0069d9;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .link:hover {
+    color: #004085;
+  }
+  
+  /* Responsive Design for smaller screens */
+  @media (max-width: 768px) {
+    .seller-container {
+      padding: 15px;
+    }
+    .seller-heading {
+      font-size: 1.6em;
+    }
+    .seller-info p {
+      font-size: 1em;
+    }
+  }
+  
+
+
+
+  /* Order Details Container */
+.order-details-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Title Style */
+.order-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Loading indicator and error message */
+.loading-indicator {
+  text-align: center;
+  font-size: 18px;
+  color: #007bff;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 18px;
+  color: #e74c3c;
+}
+
+.no-data {
+  text-align: center;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+/* Order Information Style */
+.order-info {
+  margin-top: 20px;
+}
+
+.order-summary {
+  margin-bottom: 30px;
+}
+
+.order-summary p {
+  font-size: 16px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.order-summary strong {
+  color: #2c3e50;
+}
+
+/* Address Details */
+.address-details p {
+  font-size: 16px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.address-details strong {
+  color: #2c3e50;
+}
+
+/* Links Section */
+.links-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.links-container .link {
+  text-decoration: none;
+  color: #3498db;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.links-container .link:hover {
+  color: #2980b9;
+}
+
+.links-container span {
+  font-size: 14px;
+  color: #7f8c8d;
+}
