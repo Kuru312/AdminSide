@@ -353,15 +353,21 @@ app.post('/logistics/:orderId/assign-courier', async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    // Check if the courier is already assigned to another order in the CourierPanel collection
+    const existingOrderInCourierPanel = await CourierPanel.findOne({ courierId });
+    if (existingOrderInCourierPanel) {
+      return res.status(400).json({ message: 'Courier is already assigned to another order' });
+    }
+
     // Update the order with the courierId and status
     order.courierId = courierId;
     order.status = status;
 
-    // Insert the updated order into the courierpanel collection
+    // Insert the updated order into the CourierPanel collection
     const newOrder = new CourierPanel(order.toObject());
     await newOrder.save();
 
-    // Remove the order from the logistics collection
+    // Remove the order from the Logistics collection
     await Logistics.findByIdAndDelete(orderId);
 
     res.json(newOrder);
@@ -371,28 +377,34 @@ app.post('/logistics/:orderId/assign-courier', async (req, res) => {
   }
 });
 
-// Route to update the status of an order in the Logistics collection
-app.post('/logistics/:orderId/status', async (req, res) => {
+
+app.post('/courierpanel/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { status } = req.body;
+    const { status, courierId } = req.body;  // Destructure status and courierId
 
-    // Find the order in the Logistics collection
-    const order = await Logistics.findById(orderId);
+    // Find the order by its ID in the CourierPanel collection
+    const order = await CourierPanel.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Update the status of the order
+    // Update the order status and remove the courierId if it's set to null
     order.status = status;
+    if (courierId === null) {
+      order.courierId = null; // Remove courierId if it's set to null
+    }
+
+    // Save the updated order to the database
     await order.save();
 
-    res.status(200).json({ message: 'Order status updated successfully' });
+    res.json({ message: 'Order status updated successfully' });
   } catch (error) {
     console.error('Error updating order status:', error);
     res.status(500).json({ message: 'Error updating order status' });
   }
 });
+
 
 app.get('/couriers', async (req, res) => {
   try {
@@ -486,6 +498,46 @@ app.get('/couriers/:courierId', async (req, res) => {
     res.status(500).json({ message: 'Error fetching courier' });
   }
 });
+app.get('/courierpanel', async (req, res) => {
+  try {
+    const courierpanel = await User.find();  // Fetch users from MongoDB
+    console.log("courier fetched from DB:", courierpanel);  // Log users to check data
+    res.json(courierpanel);                  // Send users as JSON response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: `Error fetching users: ${error.message}` });
+  }
+});
+// Route to fetch available couriers
+app.get('/available-couriers', async (req, res) => {
+  try {
+    // Fetch couriers that are not yet assigned to an order in the CourierPanel
+    const assignedCourierIds = await CourierPanel.distinct('courierId');  // Get all unique courierIds in CourierPanel
+    const availableCouriers = await Courier.find({
+      _id: { $nin: assignedCourierIds },  // Exclude couriers that are already assigned to orders
+    });
+    
+    res.json(availableCouriers);  // Send the available couriers as JSON response
+  } catch (error) {
+    console.error('Error fetching available couriers:', error);
+    res.status(500).json({ message: 'Error fetching available couriers' });
+  }
+});
+
+app.delete('/couriers/:id', async (req, res) => {
+  const courierId = req.params.id;
+  try {
+    // Find and delete the courier by ID
+    const result = await Courier.findByIdAndDelete(courierId);
+    if (!result) {
+      return res.status(404).json({ message: 'Courier not found' });
+    }
+    res.status(200).json({ message: 'Courier removed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting courier', error });
+  }
+});
+
 const PORT = 5001;
 app.listen(PORT, () => {
   console.log(`Backend server is running on http://localhost:${PORT}`);

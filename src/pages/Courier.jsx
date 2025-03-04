@@ -15,14 +15,13 @@ const Couriers = () => {
   });
 
   useEffect(() => {
-    // Fetch couriers from the backend
     const fetchCouriers = async () => {
       try {
         const response = await fetch('http://localhost:5001/couriers');
         const data = await response.json();
         setCouriers(data);
       } catch (error) {
-        console.error("Error fetching couriers:", error);
+        console.error('Error fetching couriers:', error);
       }
     };
 
@@ -54,25 +53,45 @@ const Couriers = () => {
         toast.error('Failed to add courier.');
       }
     } catch (error) {
-      console.error("Error adding courier:", error);
+      console.error('Error adding courier:', error);
       toast.error('Error adding courier.');
+    }
+  };
+
+  const removeCourier = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5001/couriers/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setCouriers(couriers.filter(courier => courier._id !== id));
+        toast.success('Courier removed successfully!');
+      } else {
+        toast.error('Failed to remove courier.');
+      }
+    } catch (error) {
+      console.error('Error removing courier:', error);
+      toast.error('Error removing courier.');
     }
   };
 
   return (
     <main className="container mt-5">
       {/* Header Section */}
-      <div className="header d-flex justify-content-between align-items-center mb-4">
-        <h2 className="font-weight-bold text-primary">Courier Management</h2>
+      <div className="row justify-content-between mb-4">
+        <div className="col-12">
+          <h2 className="font-weight-bold text-primary">Courier Management</h2>
+        </div>
       </div>
 
       {/* Add Courier Section */}
       <div className="card shadow-sm mb-4">
         <div className="card-body">
-          <h4 className="card-title">Add New Courier</h4>
+          <h4 className="card-title mb-4">Add New Courier</h4>
           <form onSubmit={(e) => { e.preventDefault(); addCourier(); }}>
-            <div className="form-row">
-              <div className="form-group col-md-6">
+            <div className="row">
+              <div className="col-md-6 mb-3">
                 <label htmlFor="courierName">Name</label>
                 <input
                   type="text"
@@ -83,7 +102,7 @@ const Couriers = () => {
                   required
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="col-md-6 mb-3">
                 <label htmlFor="courierAddress">Address</label>
                 <input
                   type="text"
@@ -96,8 +115,8 @@ const Couriers = () => {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group col-md-6">
+            <div className="row">
+              <div className="col-md-6 mb-3">
                 <label htmlFor="courierPlateNumber">Plate Number</label>
                 <input
                   type="text"
@@ -108,7 +127,7 @@ const Couriers = () => {
                   required
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="col-md-6 mb-3">
                 <label htmlFor="courierDriverLicense">Driver License</label>
                 <input
                   type="text"
@@ -128,10 +147,10 @@ const Couriers = () => {
         </div>
       </div>
 
-      {/* Courier Table Section */}
-      <div className="card shadow-sm">
+      {/* Courier List Section */}
+      <div className="card shadow-sm mb-4">
         <div className="card-body">
-          <h4 className="card-title mb-3">Courier List</h4>
+          <h4 className="card-title mb-4">Courier List</h4>
           <table className="table table-striped table-bordered">
             <thead className="thead-dark">
               <tr>
@@ -139,6 +158,7 @@ const Couriers = () => {
                 <th>Address</th>
                 <th>Plate Number</th>
                 <th>Driver License</th>
+                <th>Actions</th> {/* Added Actions column */}
               </tr>
             </thead>
             <tbody>
@@ -148,6 +168,15 @@ const Couriers = () => {
                   <td>{courier.address}</td>
                   <td>{courier.plate_number}</td>
                   <td>{courier.driver_license}</td>
+                  <td>
+                    {/* Remove Courier Button */}
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => removeCourier(courier._id)}
+                    >
+                      Remove
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

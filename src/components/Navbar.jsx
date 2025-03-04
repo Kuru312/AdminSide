@@ -17,7 +17,7 @@ function CollapsibleExample() {
             <Nav.Link as={Link} to="/courier">Courier</Nav.Link>
             <Nav.Link as={Link} to="/logistics">Logistics</Nav.Link>
             <Nav.Link as={Link} to="/order">Order Management</Nav.Link>
-            <Nav.Link as={Link} to="/record">Approve Account</Nav.Link>
+            <Nav.Link as={Link} to="/record">Accounts</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

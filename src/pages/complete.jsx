@@ -27,28 +27,7 @@ const CourierPanel = () => {
     fetchOrders();
   }, []);
 
-  const handleDelivered = async (orderId) => {
-    try {
-      const response = await fetch(`http://localhost:5001/courierpanel/${orderId}/status`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'Delivered' }),
-      });
 
-      if (response.ok) {
-        toast.success('Order status updated to Delivered!');
-        // Update the order status in the state
-        setOrders(orders.map(order => order._id === orderId ? { ...order, status: 'Delivered' } : order));
-      } else {
-        toast.error('Failed to update order status.');
-      }
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error('Error updating order status.');
-    }
-  };
 
   // Filter orders based on the search query
   const filteredOrders = orders.filter(order => {
@@ -86,7 +65,6 @@ const CourierPanel = () => {
               <th>Total</th>
               <th>Date</th>
               <th>Address</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +78,6 @@ const CourierPanel = () => {
                   <td>${order.amount}</td>
                   <td>{order.date}</td>
                   <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
-                  <td><button className="btn btn-info" onClick={() => handleDelivered(order._id)}>Delivered</button></td>
                 </tr>
               ))
             ) : (

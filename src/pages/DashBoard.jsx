@@ -6,25 +6,36 @@ import 'react-toastify/dist/ReactToastify.css'; // Import react-toastify CSS
 import './application.css';
 
 const Dashboard = () => {
-  const [sellers, setSellers] = useState([]);
-  const [error, setError] = useState(null);
-  const [users, setUsers] = useState([]);  // State to store the users data
+  const [sellers, setSellers] = useState([]);  // Store filtered users with seller applications
+  const [error, setError] = useState(null);  // Store errors (if any)
+  const [users, setUsers] = useState([]);    // Store all users data
 
   useEffect(() => {
     // Fetch data from the backend directly using the full URL
     const fetchData = async () => {
       try {
-        // Change the fetch URL to the full backend URL
-        const response = await fetch('http://localhost:5001/users'); // Use the full URL
-        const data = await response.json();    // Parse the JSON response
-        setUsers(data);  // Store fetched data in 'users'
+        const response = await fetch('http://localhost:5001/users');  // Fetch data from the backend
+        const data = await response.json();  // Parse the JSON response
+        
+        // Filter users to get only those with non-null sellerApplication or investorApplication
+        const filteredUsers = data.filter(user => 
+          user.sellerApplication !== null || user.investorApplication !== null
+        );
+
+        setUsers(filteredUsers);  // Store the filtered data in 'users'
+
+        // If you want to separately store sellers with non-null sellerApplication
+        const sellerUsers = data.filter(user => user.sellerApplication !== null);
+        setSellers(sellerUsers);  // Store only seller users with valid applications
+
       } catch (error) {
-        console.error("Error fetching users:", error);  // Handle errors
+        setError("Error fetching users: " + error.message);  // Handle any fetch errors
+        console.error("Error fetching users:", error);
       }
     };
 
     fetchData();  // Call fetchData when the component mounts
-  }, []);
+  }, []);  // Empty dependency array ensures this only runs once
 
   const handleApprove = async (userId) => {
     try {
