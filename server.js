@@ -20,7 +20,7 @@ app.use(cors({
 app.use(express.json());  // You were missing this middleware to handle JSON data in POST requests
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://louwisalfredn:09151225324Sam123@cluster0.2qnxu.mongodb.net/e-commerce', { useNewUrlParser: true, useUnifiedTopology: true }) // Specify the database name
+mongoose.connect('CoonectionSctring, { useNewUrlParser: true, useUnifiedTopology: true }) // Specify the database name
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {
     console.error('Error connecting to MongoDB:', err);
