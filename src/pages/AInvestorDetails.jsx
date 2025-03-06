@@ -2,25 +2,25 @@ import './application.css'; // Make sure you have the right CSS file imported
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-const InvestorDetails = () => {
-  const { id } = useParams(); // Get the investor ID from the URL parameters
-  const [user, setUser] = useState(null);
+const SellerDetails = () => {
+  const { id } = useParams(); // Get the seller ID from the URL parameters
+  const [investorDetails, setInvestorDetails] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
-    const fetchInvestorDetails = async () => {
+    const fetchSellerDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/users/${id}`);  // Fetch user details based on ID
+        const response = await fetch(`http://localhost:5001/approveSellerInvestor/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error('Investor not found');
+            throw new Error('Seller not found');
           } else {
             throw new Error('Network response was not ok');
           }
         }
         const data = await response.json();
-        setUser(data);  // Set the fetched data in the state
+        setInvestorDetails(data);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -28,8 +28,8 @@ const InvestorDetails = () => {
       }
     };
 
-    fetchInvestorDetails();
-  }, [id]);  // Fetch data again if the `id` parameter changes
+    fetchSellerDetails();
+  }, [id]);
 
   return (
     <div className="investor-container">
@@ -40,14 +40,14 @@ const InvestorDetails = () => {
         </div>
       ) : error ? (
         <p>Error fetching investor details: {error}</p>
-      ) : user ? (
+      ) : investorDetails ? (
         <div className="investor-info">
-          <p><strong>Investment Type:</strong> {user.investorApplication?.investmentType || 'N/A'}</p>
-          <p><strong>Company Name:</strong> {user.investorApplication?.companyName || 'N/A'}</p>
-          <p><strong>Industry:</strong> {user.investorApplication?.industry || 'N/A'}</p>
-          <p><strong>Contact Number:</strong> {user.investorApplication?.contactNumber || 'N/A'}</p>
-          <p><strong>Investment Amount:</strong> ${user.investorApplication?.investmentAmount || 'N/A'}</p>
-          <p><strong>Supporting Document:</strong> <a href={user.investorApplication?.supportingDocument} target="_blank" rel="noopener noreferrer">View Document</a></p>
+          <p><strong>Investment Type:</strong> {investorDetails.investorApplication?.investmentType || 'N/A'}</p>
+          <p><strong>Company Name:</strong> {investorDetails.investorApplication?.companyName || 'N/A'}</p>
+          <p><strong>Industry:</strong> {investorDetails.investorApplication?.industry || 'N/A'}</p>
+          <p><strong>Contact Number:</strong> {investorDetails.investorApplication?.contactNumber || 'N/A'}</p>
+          <p><strong>Investment Amount:</strong> ${investorDetails.investorApplication?.investmentAmount || 'N/A'}</p>
+          <p><strong>Supporting Document:</strong> <a href={investorDetails.investorApplication?.supportingDocument} target="_blank" rel="noopener noreferrer">View Document</a></p>
         </div>
       ) : (
         <p>No data available.</p>
@@ -65,4 +65,4 @@ const InvestorDetails = () => {
   );
 };
 
-export default InvestorDetails;
+export default SellerDetails;

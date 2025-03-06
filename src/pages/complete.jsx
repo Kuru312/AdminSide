@@ -5,32 +5,57 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CourierPanel = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // Ongoing orders
+  const [completedOrders, setCompletedOrders] = useState([]); // Completed orders
   const [searchQuery, setSearchQuery] = useState(""); // For search input
 
   useEffect(() => {
-    // Fetch all orders from the courierpanel collection
+    // Fetch ongoing orders from the courierpanel collection
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/courierpanel/orders`);
+        const response = await fetch(`http://localhost:5001/courierpanel/orders`); // Endpoint for ongoing deliveries
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
         setOrders(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Error fetching orders:", error);
-        toast.error('Error fetching orders.');
+        console.error("Error fetching ongoing orders:", error);
+        toast.error('Error fetching ongoing orders.');
       }
     };
 
+    // Fetch completed orders from the completeorders collection
+    const fetchCompletedOrders = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/completeorders`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCompletedOrders(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching completed orders:", error);
+        toast.error('Error fetching completed orders.');
+      }
+    };
+    
     fetchOrders();
-  }, []);
+    fetchCompletedOrders();
+  }, []); // Empty dependency array to run only once when component mounts
 
+  // Filter ongoing orders based on the search query
+  const filteredOngoingOrders = orders.filter(order => {
+    const fullName = `${order.address.firstName} ${order.address.lastName}`;
+    const searchQueryLower = searchQuery.toLowerCase();
+    return (
+      order._id.toLowerCase().includes(searchQueryLower) || 
+      fullName.toLowerCase().includes(searchQueryLower)
+    );
+  });
 
-
-  // Filter orders based on the search query
-  const filteredOrders = orders.filter(order => {
+  // Filter completed orders based on the search query
+  const filteredCompletedOrders = completedOrders.filter(order => {
     const fullName = `${order.address.firstName} ${order.address.lastName}`;
     const searchQueryLower = searchQuery.toLowerCase();
     return (
@@ -43,7 +68,7 @@ const CourierPanel = () => {
     <main className="container mt-4">
       {/* Header Section */}
       <div className="header d-flex justify-content-between align-items-center mb-4">
-        <h2>Delivered and Orders</h2>
+        <h2>Delivery and Complete</h2>
         <input 
           type="text"
           placeholder="Search by Order ID or Customer Name"
@@ -53,8 +78,9 @@ const CourierPanel = () => {
         />
       </div>
 
-      {/* Orders Table Section */}
+      {/* Ongoing Deliveries Table */}
       <div className="order-table">
+        <h3>Ongoing Deliveries</h3>
         <table className="table table-bordered">
           <thead className="thead-light">
             <tr>
@@ -68,26 +94,63 @@ const CourierPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map(order => (
+            {filteredOngoingOrders.length > 0 ? (
+              filteredOngoingOrders.map(order => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.address.firstName} {order.address.lastName}</td>
                   <td>{order.items.map(item => item.name).join(', ')}</td>
                   <td>{order.status}</td>
                   <td>${order.amount}</td>
-                  <td>{order.date}</td>
+                  <td>{new Date(order.date).toLocaleDateString()}</td>
                   <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center">No orders found matching your search.</td>
+                <td colSpan="7" className="text-center">No ongoing deliveries found matching your search.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Completed Deliveries Table */}
+      <div className="order-table mt-5">
+        <h3>Completed Deliveries</h3>
+        <table className="table table-bordered">
+          <thead className="thead-light">
+            <tr>
+              <th>Order ID</th>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Status</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {filteredCompletedOrders.length > 0 ? (
+              filteredCompletedOrders.map(order => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.userId}</td> {/* Display User ID */}
+                  <td>{order.address.firstName}</td> {/* Display User ID */}
+                  <td>{new Date(order.date).toLocaleDateString()}</td> {/* Display Date */}
+                  <td>{order.status}</td> {/* Display User ID */}
+
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="text-center">No completed deliveries found matching your search.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>
   );

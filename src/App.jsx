@@ -15,6 +15,8 @@ import Logistics from './pages/Logistics';  // Corrected import
 import Courier from './pages/Courier';  // Corrected import
 import CourierPanel from './Courier/Courierpanel';  // Corrected import
 import Complete from './pages/complete';  // Importing Complete
+import InvestorDetails from './pages/InvestorDetails';
+import AInvestorDetails from './pages/AInvestorDetails';
 
 const App = () => {
   const [courierId, setCourierId] = useState(null); // Define courierId state
@@ -41,6 +43,11 @@ const App = () => {
               <Route path="/Courier" element={<Courier />} />  {/* Corrected route */}
               <Route path="/Courierpanel" element={<CourierPanel courierId={courierId} />} />  {/* Corrected route */}
               <Route path="/complete" element={<Complete />} />  {/* Route for Complete component */}
+              <Route path="/InvestorDetails" element={<InvestorDetails />} />
+              <Route path="/InvestorDetails/:id" element={<InvestorDetails />} />  {/* Update this route */}
+              <Route path="/AInvestorDetails/:id" element={<AInvestorDetails />} />  {/* Update this route */}
+
+
             </Routes>
           </Col>
         </Row>

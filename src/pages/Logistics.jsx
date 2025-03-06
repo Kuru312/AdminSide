@@ -154,7 +154,7 @@ const Logistics = () => {
                 <td>{order.items.map(item => item.name).join(', ')}</td>
                 <td>{order.status}</td>
                 <td>₱{order.amount}</td>
-                <td>{order.date}</td>
+                <td>{new Date(order.date).toLocaleDateString()}</td>
                 <td>
                   <select
                     value={selectedCouriers[order._id] || ''}

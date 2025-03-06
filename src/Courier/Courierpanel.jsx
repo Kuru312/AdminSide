@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../components/order.css'; // Reuse the same CSS file as Order.jsx
+import '../components/order.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CourierPanel = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]);  // This is your state to hold orders
+  const [loading, setLoading] = useState(true); // Set loading to true initially for orders fetching
+  const [deliveringOrderId, setDeliveringOrderId] = useState(null); // Track which order is being delivered
 
+  // Fetch orders when the component mounts
   useEffect(() => {
-    // Fetch all orders from the courierpanel collection
     const fetchOrders = async () => {
       try {
         const response = await fetch(`http://localhost:5001/courierpanel/orders`);
@@ -16,10 +18,12 @@ const CourierPanel = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setOrders(Array.isArray(data) ? data : []);
+        setOrders(Array.isArray(data) ? data : []); // Set orders from the response
       } catch (error) {
         console.error("Error fetching orders:", error);
         toast.error('Error fetching orders.');
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
@@ -27,38 +31,51 @@ const CourierPanel = () => {
   }, []);
 
   const handleDelivered = async (orderId) => {
+    setDeliveringOrderId(orderId); // Set the order being processed
     try {
-      // Send a POST request to update the status to "Delivered" and remove the courierId
-      const response = await fetch(`http://localhost:5001/courierpanel/${orderId}/status`, {
+      const response = await fetch(`http://localhost:5001/moveToCompleteOrders/${orderId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'Delivered', courierId: null }), // Set courierId to null to remove it
       });
-  
+
       if (response.ok) {
-        toast.success('Order status updated to Delivered and courier removed!');
+        // Successfully moved to completed
+        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId)); // Remove from courierpanel
         
-        // Update the order status and remove the courierId in the state
-        setOrders(orders.map(order => order._id === orderId ? { ...order, status: 'Delivered', courierId: null } : order));
+        toast.success("Order Delivered Successfully");
+
+        // Optionally, you can update status locally
+        setOrders(prevOrders => 
+          prevOrders.map(order => 
+            order._id === orderId ? { ...order, status: 'Delivered' } : order
+          )
+        );
       } else {
-        toast.error('Failed to update order status.');
+        let errorMessage = 'Failed to move order to completed';
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (jsonError) {
+          console.error("Error parsing JSON error response:", jsonError);
+        }
+        console.error('Error moving order to completed:', errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error('Error updating order status.');
+      console.error('Error in request:', error);
+      toast.error("Network Error");
+    } finally {
+      setDeliveringOrderId(null); // Reset after processing
     }
   };
-  
+
   return (
     <main className="container mt-4">
-      {/* Header Section */}
       <div className="header d-flex justify-content-between align-items-center mb-4">
         <h2>Assigned Orders</h2>
       </div>
 
-      {/* Orders Table Section */}
       <div className="order-table">
         <table className="table table-bordered">
           <thead className="thead-light">
@@ -73,21 +90,35 @@ const CourierPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.address.firstName} {order.address.lastName}</td>
-                <td>{order.items.map(item => item.name).join(', ')}</td>
-                <td>{order.status}</td>
-                <td>₱{order.amount}</td>
-                <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
-                <td><button className="btn btn-info" onClick={() => handleDelivered(order._id)}>Delivered</button></td>
+            {loading ? (
+              <tr>
+                <td colSpan="7" className="text-center">Loading...</td>
               </tr>
-            ))}
+            ) : (
+              orders.map(order => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.address.firstName} {order.address.lastName}</td>
+                  <td>{order.items.map(item => item.name).join(', ')}</td>
+                  <td>{order.status}</td>
+                  <td>₱{order.amount}</td>
+                  <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
+                  <td>
+                    <button
+                      className="btn btn-info"
+                      onClick={() => handleDelivered(order._id)}
+                      disabled={deliveringOrderId === order._id || order.status === 'Delivered'} // Disable if already delivered or processing
+                    >
+                      {deliveringOrderId === order._id ? "Processing..." : "Delivered"}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-      <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
+      <ToastContainer />
     </main>
   );
 };

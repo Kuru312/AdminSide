@@ -78,7 +78,7 @@ const Order = () => {
                 <td>{order.items.map(item => item.name).join(', ')}</td> {/* Assuming the items have a 'name' field */}
                 <td>{order.status}</td>
                 <td>₱{order.amount}</td>
-                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td>{new Date(order.date).toLocaleDateString()}</td>
                 <td>
                   {/* You can add action buttons here like Edit, Delete */}
                   <Link to={`/orderdetails/${order._id}`} className="btn btn-info me-2">View</Link>

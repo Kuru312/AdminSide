@@ -20,7 +20,7 @@ app.use(cors({
 app.use(express.json());  // You were missing this middleware to handle JSON data in POST requests
 
 // MongoDB connection
-mongoose.connect('CoonectionSctring, { useNewUrlParser: true, useUnifiedTopology: true }) // Specify the database name
+mongoose.connect('mongodb+srv://louwisalfredn:09151225324Sam123@cluster0.2qnxu.mongodb.net/e-commerce', { useNewUrlParser: true, useUnifiedTopology: true }) // Specify the database name
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {
     console.error('Error connecting to MongoDB:', err);
@@ -169,24 +169,30 @@ app.get('/orders/:id', async (req, res) => {
   }
 });
 
-// Route to approve a user
-app.post('/approve/:id', async (req, res) => {
+app.post('/approve/:userId', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const userId = req.params.userId;
+
+    // Find the user from the original collection
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).send("User not found");
     }
-    // Move the user to the ApproveSellerInvestor collection
-    const approvedUser = new ApproveSellerInvestor(user.toObject());
-    await approvedUser.save();
-    // Optionally, delete the user from the original collection
-    await User.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'User approved' });
+
+    // Move the user to the approveSellerInvestor collection
+    const newUser = new ApproveSellerInvestor(user.toObject());  // Make a copy of the user document
+    await newUser.save();
+
+    // Remove the user from the original collection
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).send("User approved and moved to approveSellerInvestor");
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: `Error approving user: ${error.message}` });
+    console.error("Error approving user:", error);
+    res.status(500).send("Internal server error");
   }
 });
+
 
 // Route to delete a user
 app.delete('/users/:id', async (req, res) => {
@@ -325,6 +331,20 @@ const courierPanelSchema = new mongoose.Schema({
 });
 
 const CourierPanel = mongoose.model('courierpanel', courierPanelSchema, 'courierpanel');
+
+const CompleteOrderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items: [{ type: mongoose.Schema.Types.Mixed, required: true }],
+  amount: { type: Number, required: true },
+  address: { type: Object, required: true },
+  status: { type: String, default: 'Delivered' },
+  paymentMethod: { type: String, required: true },
+  payment: { type: Boolean, default: false },
+  date: { type: Date, default: Date.now },
+  courierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Courier' },
+});
+
+const CompleteOrder = mongoose.model('CompleteOrder', CompleteOrderSchema);
 
 // Route to fetch a courier by ID
 app.get('/couriers/:courierId', async (req, res) => {
@@ -538,7 +558,66 @@ app.delete('/couriers/:id', async (req, res) => {
   }
 });
 
+// The endpoint to handle moving an order to the complete orders collection
+app.post('/moveToCompleteOrders/:orderId', async (req, res) => {
+  const { orderId } = req.params;  // Capture the orderId from the URL
+  try {
+    // Find the order by its ID in the CourierPanel collection
+    const order = await CourierPanel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Create a new complete order entry (move the order to CompleteOrders collection)
+    const completeOrder = new CompleteOrder({
+      userId: order.userId,
+      items: order.items,
+      amount: order.amount,
+      address: order.address,
+      status: "Delivered",
+      paymentMethod: order.paymentMethod,
+      payment: order.payment,
+      date: order.date,
+      courierId: order.courierId,
+    });
+
+    // Save it to the CompleteOrders collection
+    await completeOrder.save();
+
+    // Delete the order from the CourierPanel collection
+    await CourierPanel.findByIdAndDelete(orderId);
+
+    // Return success message
+    res.status(200).json({ message: 'Order moved to completed successfully' });
+  } catch (error) {
+    console.error('Error moving order to completed:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// Backend routes
+app.get('/courierpanel', async (req, res) => {
+  try {
+    const ongoingOrders = await CourierPanel.find();  // Your logic here to get ongoing orders
+    res.status(200).json(ongoingOrders);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching ongoing orders' });
+  }
+});
+
+app.get('/completeorders', async (req, res) => {
+  try {
+    const completedOrders = await CompleteOrder.find(); // Assuming 'CompleteOrder' is your model
+    res.status(200).json(completedOrders);
+  } catch (error) {
+    console.error("Error fetching completed orders:", error);
+    res.status(500).json({ message: 'Error fetching completed orders' });
+  }
+});
+
+
 const PORT = 5001;
 app.listen(PORT, () => {
   console.log(`Backend server is running on http://localhost:${PORT}`);
 });
+

@@ -42,6 +42,13 @@ const OrderDetails = () => {
         <div className="order-info">
           <div className="order-summary">
             <p><strong>Order Amount:</strong> {order.amount || 'N/A'}</p>
+            {order.items && order.items.length > 0 ? (
+  order.items.map((item, index) => (
+    <p key={index}><strong>Quantity:</strong> {item.quantity || 'N/A'}</p>
+  ))
+) : (
+  <p>No items in order</p>
+)}
             <p><strong>Payment Method:</strong> {order.paymentMethod || 'N/A'}</p>
             <p><strong>Payment Status:</strong> {order.payment ? 'Paid' : 'Not Paid'}</p>
           </div>

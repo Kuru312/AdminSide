@@ -72,6 +72,7 @@ const AccountRecords = () => {
       );
       setFilteredBuyers(filteredBuyersList);
     } else {
+      // Reset to the original data when the search term is cleared
       setFilteredSellers(approveSellerInvestors.filter(user => user.sellerApplication !== null));
       setFilteredInvestors(approveSellerInvestors.filter(user => user.investorApplication !== null));
       setFilteredBuyers(filteredBuyers);
@@ -109,17 +110,21 @@ const AccountRecords = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredSellers.map(user => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      <Link to={`/ASellerDetails/${user._id}`} className="btn btn-primary">
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {filteredSellers.length > 0 ? (
+                  filteredSellers.map(user => (
+                    <tr key={user._id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <Link to={`/ASellerDetails/${user._id}`} className="btn btn-primary">
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="3">No sellers found</td></tr>
+                )}
               </tbody>
             </table>
           </>
@@ -144,17 +149,21 @@ const AccountRecords = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredInvestors.map(user => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      <Link to={`/AInvestorDetails/${user._id}`} className="btn btn-primary">
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {filteredInvestors.length > 0 ? (
+                  filteredInvestors.map(user => (
+                    <tr key={user._id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <Link to={`/AInvestorDetails/${user._id}`} className="btn btn-primary">
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="3">No investors found</td></tr>
+                )}
               </tbody>
             </table>
           </>
@@ -178,12 +187,16 @@ const AccountRecords = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredBuyers.map(user => (
-                  <tr key={user._id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                  </tr>
-                ))}
+                {filteredBuyers.length > 0 ? (
+                  filteredBuyers.map(user => (
+                    <tr key={user._id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="2">No buyers found</td></tr>
+                )}
               </tbody>
             </table>
           </>

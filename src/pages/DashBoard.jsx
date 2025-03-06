@@ -7,6 +7,7 @@ import './application.css';
 
 const Dashboard = () => {
   const [sellers, setSellers] = useState([]);  // Store filtered users with seller applications
+  const [investors, setInvestors] = useState([]);  // Store filtered users with investor applications
   const [error, setError] = useState(null);  // Store errors (if any)
   const [users, setUsers] = useState([]);    // Store all users data
 
@@ -14,19 +15,24 @@ const Dashboard = () => {
     // Fetch data from the backend directly using the full URL
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5001/users');  // Fetch data from the backend
+        // Fetch data from the backend for both seller and investor applications
+        const response = await fetch('http://localhost:5001/users');  // Fetch all users data from backend
         const data = await response.json();  // Parse the JSON response
-        
+
         // Filter users to get only those with non-null sellerApplication or investorApplication
-        const filteredUsers = data.filter(user => 
+        const filteredUsers = data.filter(user =>
           user.sellerApplication !== null || user.investorApplication !== null
         );
 
         setUsers(filteredUsers);  // Store the filtered data in 'users'
 
-        // If you want to separately store sellers with non-null sellerApplication
+        // Filter and store sellers with non-null sellerApplication
         const sellerUsers = data.filter(user => user.sellerApplication !== null);
         setSellers(sellerUsers);  // Store only seller users with valid applications
+
+        // Filter and store investors with non-null investorApplication
+        const investorUsers = data.filter(user => user.investorApplication !== null);
+        setInvestors(investorUsers);  // Store only investor users with valid applications
 
       } catch (error) {
         setError("Error fetching users: " + error.message);  // Handle any fetch errors
@@ -42,19 +48,25 @@ const Dashboard = () => {
       const response = await fetch(`http://localhost:5001/approve/${userId}`, {
         method: 'POST',
       });
+  
       if (!response.ok) {
-        throw new Error('Failed to approve user');
+        const errorDetails = await response.text();
+        throw new Error(`Failed to approve user: ${errorDetails}`);
       }
-      // Optionally, update the UI or refetch the users list
+  
+      // After approval, remove the user from the UI and show a success message
       setUsers(users.filter(user => user._id !== userId));
-      toast.success('User approved successfully!');
+      setSellers(sellers.filter(user => user._id !== userId));
+      setInvestors(investors.filter(user => user._id !== userId));
+      
+      toast.success('User approved and moved to approved list!');
     } catch (error) {
       console.error("Error approving user:", error);
       setError(error.message);
       toast.error('Failed to approve user');
     }
   };
-
+  
   const handleReject = async (userId) => {
     try {
       const response = await fetch(`http://localhost:5001/users/${userId}`, {
@@ -106,7 +118,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
+              {sellers.map(user => (
                 <tr key={user._id}>
                   <td>{user._id}</td>
                   <td>{user.name}</td>
@@ -116,7 +128,6 @@ const Dashboard = () => {
                       View Details
                     </Link>
                   </td>
-                  {/* Add Approve and Reject Buttons */}
                   <td>
                     <button
                       className="btn btn-success"
@@ -139,7 +150,8 @@ const Dashboard = () => {
           </table>
         )}
       </div>
-      {/* Application for Seller Table Section */}
+
+      {/* Application for Investor Table Section */}
       <div className="table-responsive mt-5">
         <div className="d-flex justify-content-between mb-3">
           <h3>Application for Investor</h3>
@@ -162,10 +174,38 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
+              {investors.map(user => (
+                <tr key={user._id}>
+                  <td>{user._id}</td>
+                  <td>{user.name}</td>
+                  <td>
+                    <Link to={`/InvestorDetails/${user._id}`} className="btn btn-primary">
+                      View Details
+                    </Link>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-success"
+                      onClick={() => handleApprove(user._id)} // Approve action handler
+                    >
+                      Approve
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleReject(user._id)} // Reject action handler
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
       </div>
+
       <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>
   );
