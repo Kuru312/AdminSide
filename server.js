@@ -615,6 +615,54 @@ app.get('/completeorders', async (req, res) => {
   }
 });
 
+const tradeSchema = new mongoose.Schema({
+  sellerFrom: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'user', 
+    required: true 
+  },
+  sellerTo: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'user', 
+    required: true 
+  },
+  productFrom: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Product', 
+    required: true 
+  },
+  productTo: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Product', 
+    required: true 
+  },
+  quantity: { 
+    type: Number, 
+    required: true,
+    min: [1, 'Quantity must be at least 1']
+  },
+  status: { 
+    type: String, 
+    enum: ['pending', 'accepted', 'rejected', 'completed', 'cancelled'], 
+    default: 'pending',
+    lowercase: true
+  },
+  acceptedAt: { type: Date },
+  completedAt: { type: Date },
+  createdAt: { type: Date, default: Date.now },
+  notes: { type: String }, // Optional notes for the trade
+  isActive: { type: Boolean, default: true } // To soft delete trades
+});
+const trades = mongoose.model('trades', tradeSchema, 'trades');
+
+app.get('/trades', async (req, res) => {
+  try {
+    const allTrades = await trades.find();
+    res.status(200).json(allTrades);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching trades' });
+  }
+});
 
 const PORT = 5001;
 app.listen(PORT, () => {
