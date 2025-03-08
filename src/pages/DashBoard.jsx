@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [investors, setInvestors] = useState([]);  // Store filtered users with investor applications
   const [error, setError] = useState(null);  // Store errors (if any)
   const [users, setUsers] = useState([]);    // Store all users data
+  const [activeSection, setActiveSection] = useState('sellers'); // Active section for toggle
 
   useEffect(() => {
     // Fetch data from the backend directly using the full URL
@@ -94,117 +95,137 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Application for Seller Table Section */}
-      <div className="table-responsive mt-5">
-        <div className="d-flex justify-content-between mb-3">
-          <h3>Application for Seller</h3>
-          <div>
-            <i className="bx bx-search text-muted mr-3" style={{ fontSize: '1.5rem' }}></i>
-            <i className="bx bx-filter text-muted" style={{ fontSize: '1.5rem' }}></i>
-          </div>
-        </div>
-        {error ? (
-          <p>Error fetching applications: {error}</p>
-        ) : (
-          <table className="table table-striped table-bordered table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Business Name</th>
-                <th>Check</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {sellers.map(user => (
-                <tr key={user._id}>
-                  <td>{user._id}</td>
-                  <td>{user.name}</td>
-                  <td>{user.sellerApplication?.businessName || 'N/A'}</td>
-                  <td>
-                    <Link to={`/SellerDetails/${user._id}`} className="btn btn-primary">
-                      View Details
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleApprove(user._id)} // Approve action handler
-                    >
-                      Approve
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleReject(user._id)} // Reject action handler
-                    >
-                      Reject
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      {/* Toggle Buttons for Sellers and Investors */}
+      <div className="d-flex justify-content-center mb-4">
+        <button
+          className={`btn ${activeSection === 'sellers' ? 'btn-primary' : 'btn-outline-primary'}`}
+          onClick={() => setActiveSection('sellers')}
+        >
+          Seller Applications
+        </button>
+        <button
+          className={`btn ${activeSection === 'investors' ? 'btn-primary' : 'btn-outline-primary'}`}
+          onClick={() => setActiveSection('investors')}
+        >
+          Investor Applications
+        </button>
       </div>
 
-      {/* Application for Investor Table Section */}
-      <div className="table-responsive mt-5">
-        <div className="d-flex justify-content-between mb-3">
-          <h3>Application for Investor</h3>
-          <div>
-            <i className="bx bx-search text-muted mr-3" style={{ fontSize: '1.5rem' }}></i>
-            <i className="bx bx-filter text-muted" style={{ fontSize: '1.5rem' }}></i>
+      {/* Application for Seller Table Section */}
+      {activeSection === 'sellers' && (
+        <div className="table-responsive mt-5">
+          <div className="d-flex justify-content-between mb-3">
+            <h3>Application for Seller</h3>
+            <div>
+              <i className="bx bx-search text-muted mr-3" style={{ fontSize: '1.5rem' }}></i>
+              <i className="bx bx-filter text-muted" style={{ fontSize: '1.5rem' }}></i>
+            </div>
           </div>
-        </div>
-        {error ? (
-          <p>Error fetching applications: {error}</p>
-        ) : (
-          <table className="table table-striped table-bordered table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Check</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {investors.map(user => (
-                <tr key={user._id}>
-                  <td>{user._id}</td>
-                  <td>{user.name}</td>
-                  <td>
-                    <Link to={`/InvestorDetails/${user._id}`} className="btn btn-primary">
-                      View Details
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleApprove(user._id)} // Approve action handler
-                    >
-                      Approve
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleReject(user._id)} // Reject action handler
-                    >
-                      Reject
-                    </button>
-                  </td>
+          {error ? (
+            <p>Error fetching applications: {error}</p>
+          ) : (
+            <table className="table table-striped table-bordered table-hover">
+              <thead className="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Business Name</th>
+                  <th>Check</th>
+                  <th></th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {sellers.map(user => (
+                  <tr key={user._id}>
+                    <td>{user._id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.sellerApplication?.businessName || 'N/A'}</td>
+                    <td>
+                      <Link to={`/SellerDetails/${user._id}`} className="btn btn-primary">
+                        View Details
+                      </Link>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleApprove(user._id)} // Approve action handler
+                      >
+                        Approve
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleReject(user._id)} // Reject action handler
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {/* Application for Investor Table Section */}
+      {activeSection === 'investors' && (
+        <div className="table-responsive mt-5">
+          <div className="d-flex justify-content-between mb-3">
+            <h3>Application for Investor</h3>
+            <div>
+              <i className="bx bx-search text-muted mr-3" style={{ fontSize: '1.5rem' }}></i>
+              <i className="bx bx-filter text-muted" style={{ fontSize: '1.5rem' }}></i>
+            </div>
+          </div>
+          {error ? (
+            <p>Error fetching applications: {error}</p>
+          ) : (
+            <table className="table table-striped table-bordered table-hover">
+              <thead className="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Check</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {investors.map(user => (
+                  <tr key={user._id}>
+                    <td>{user._id}</td>
+                    <td>{user.name}</td>
+                    <td>
+                      <Link to={`/InvestorDetails/${user._id}`} className="btn btn-primary">
+                        View Details
+                      </Link>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleApprove(user._id)} // Approve action handler
+                      >
+                        Approve
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleReject(user._id)} // Reject action handler
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
 
       <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>

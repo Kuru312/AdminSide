@@ -138,7 +138,6 @@ const Logistics = () => {
             <tr>
               <th>Order ID</th>
               <th>Customer Name</th>
-              <th>Product</th>
               <th>Status</th>
               <th>Total</th>
               <th>Date</th>
@@ -151,7 +150,6 @@ const Logistics = () => {
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.address.firstName} {order.address.lastName}</td>
-                <td>{order.items.map(item => item.name).join(', ')}</td>
                 <td>{order.status}</td>
                 <td>₱{order.amount}</td>
                 <td>{new Date(order.date).toLocaleDateString()}</td>

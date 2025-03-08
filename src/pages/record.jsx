@@ -10,6 +10,7 @@ const AccountRecords = () => {
   const [searchTerm, setSearchTerm] = useState(''); // State to store the search term
   const [loading, setLoading] = useState(true); // State to handle loading
   const [error, setError] = useState(null); // State to handle errors
+  const [activeSection, setActiveSection] = useState('sellers'); // State to manage active section (sellers, investors, buyers)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,12 +18,12 @@ const AccountRecords = () => {
         // Fetch data for approved sellers and investors
         const responseSellerInvestor = await fetch('http://localhost:5001/approveSellerInvestor'); // API endpoint for sellers/investors
         const sellerInvestorData = await responseSellerInvestor.json();
-        setApproveSellerInvestors(sellerInvestorData); 
-        
+        setApproveSellerInvestors(sellerInvestorData);
+
         // Separate sellers and investors based on application type
         const sellers = sellerInvestorData.filter(user => user.sellerApplication !== null);
         const investors = sellerInvestorData.filter(user => user.investorApplication !== null);
-        
+
         setFilteredSellers(sellers); // Set sellers data
         setFilteredInvestors(investors); // Set investors data
 
@@ -34,7 +35,7 @@ const AccountRecords = () => {
         const mergedBuyers = [...usersData];
 
         setFilteredBuyers(mergedBuyers); // Set initial state for filtered buyers
-        
+
         setLoading(false); // Set loading state to false after data is fetched
       } catch (error) {
         console.error("Error fetching approved users:", error);  // Handle errors
@@ -92,117 +93,127 @@ const AccountRecords = () => {
         />
       </div>
 
-      {/* Records Table for Sellers */}
-      <div className="record-table">
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>Error fetching approved users: {error}</p>
-        ) : (
-          <>
-            <h3>Sellers</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSellers.length > 0 ? (
-                  filteredSellers.map(user => (
-                    <tr key={user._id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <Link to={`/ASellerDetails/${user._id}`} className="btn btn-primary">
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr><td colSpan="3">No sellers found</td></tr>
-                )}
-              </tbody>
-            </table>
-          </>
-        )}
+      {/* Toggle Buttons */}
+      <div className="toggle-buttons">
+        <button onClick={() => setActiveSection('sellers')}>Sellers</button>
+        <button onClick={() => setActiveSection('investors')}>Investors</button>
+        <button onClick={() => setActiveSection('buyers')}>Buyers</button>
       </div>
 
-      {/* Records Table for Investors */}
-      <div className="record-table">
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>Error fetching approved users: {error}</p>
-        ) : (
-          <>
-            <h3>Investors</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredInvestors.length > 0 ? (
-                  filteredInvestors.map(user => (
-                    <tr key={user._id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <Link to={`/AInvestorDetails/${user._id}`} className="btn btn-primary">
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr><td colSpan="3">No investors found</td></tr>
-                )}
-              </tbody>
-            </table>
-          </>
-        )}
-      </div>
+      {/* Conditionally Render Sections */}
+      {activeSection === 'sellers' && (
+        <div className="record-table">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error fetching approved users: {error}</p>
+          ) : (
+            <>
+              <h3>Sellers</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSellers.length > 0 ? (
+                    filteredSellers.map(user => (
+                      <tr key={user._id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <Link to={`/ASellerDetails/${user._id}`} className="btn btn-primary">
+                            View Details
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan="3">No sellers found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
+        </div>
+      )}
 
-      {/* Records Table for Buyers */}
-      <div className="record-table">
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>Error fetching approved users: {error}</p>
-        ) : (
-          <>
-            <h3>Buyers</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBuyers.length > 0 ? (
-                  filteredBuyers.map(user => (
-                    <tr key={user._id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr><td colSpan="2">No buyers found</td></tr>
-                )}
-              </tbody>
-            </table>
-          </>
-        )}
-      </div>
+      {activeSection === 'investors' && (
+        <div className="record-table">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error fetching approved users: {error}</p>
+          ) : (
+            <>
+              <h3>Investors</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInvestors.length > 0 ? (
+                    filteredInvestors.map(user => (
+                      <tr key={user._id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <Link to={`/AInvestorDetails/${user._id}`} className="btn btn-primary">
+                            View Details
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan="3">No investors found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
+        </div>
+      )}
 
+      {activeSection === 'buyers' && (
+        <div className="record-table">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error fetching approved users: {error}</p>
+          ) : (
+            <>
+              <h3>Buyers</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBuyers.length > 0 ? (
+                    filteredBuyers.map(user => (
+                      <tr key={user._id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan="2">No buyers found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </>
+          )}
+        </div>
+      )}
     </main>
   );
 };

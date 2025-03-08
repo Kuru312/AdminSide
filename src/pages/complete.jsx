@@ -8,6 +8,7 @@ const CourierPanel = () => {
   const [orders, setOrders] = useState([]); // Ongoing orders
   const [completedOrders, setCompletedOrders] = useState([]); // Completed orders
   const [searchQuery, setSearchQuery] = useState(""); // For search input
+  const [activeSection, setActiveSection] = useState('ongoing'); // Active section ("ongoing" or "completed")
 
   useEffect(() => {
     // Fetch ongoing orders from the courierpanel collection
@@ -78,78 +79,93 @@ const CourierPanel = () => {
         />
       </div>
 
-      {/* Ongoing Deliveries Table */}
-      <div className="order-table">
-        <h3>Ongoing Deliveries</h3>
-        <table className="table table-bordered">
-          <thead className="thead-light">
-            <tr>
-              <th>Order ID</th>
-              <th>Customer Name</th>
-              <th>Product</th>
-              <th>Status</th>
-              <th>Total</th>
-              <th>Date</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOngoingOrders.length > 0 ? (
-              filteredOngoingOrders.map(order => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.address.firstName} {order.address.lastName}</td>
-                  <td>{order.items.map(item => item.name).join(', ')}</td>
-                  <td>{order.status}</td>
-                  <td>${order.amount}</td>
-                  <td>{new Date(order.date).toLocaleDateString()}</td>
-                  <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center">No ongoing deliveries found matching your search.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {/* Toggle Buttons */}
+      <div className="toggle-buttons mb-4 text-center">
+        <button
+          onClick={() => setActiveSection('ongoing')}
+          className={`btn ${activeSection === 'ongoing' ? 'active' : ''}`}
+        >
+          Ongoing Deliveries
+        </button>
+        <button
+          onClick={() => setActiveSection('completed')}
+          className={`btn ${activeSection === 'completed' ? 'active' : ''}`}
+        >
+          Completed Deliveries
+        </button>
       </div>
+
+      {/* Ongoing Deliveries Table */}
+      {activeSection === 'ongoing' && (
+        <div className="order-table">
+          <h3>Ongoing Deliveries</h3>
+          <table className="table table-bordered">
+            <thead className="thead-light">
+              <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOngoingOrders.length > 0 ? (
+                filteredOngoingOrders.map(order => (
+                  <tr key={order._id}>
+                    <td>{order._id}</td>
+                    <td>{order.address.firstName} {order.address.lastName}</td>
+                    <td>{order.status}</td>
+                    <td>₱{order.amount}</td>
+                    <td>{new Date(order.date).toLocaleDateString()}</td>
+                    <td>{order.address.street}, {order.address.city}, {order.address.state}, {order.address.zip}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">No ongoing deliveries found matching your search.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Completed Deliveries Table */}
-      <div className="order-table mt-5">
-        <h3>Completed Deliveries</h3>
-        <table className="table table-bordered">
-          <thead className="thead-light">
-            <tr>
-              <th>Order ID</th>
-              <th>User ID</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Status</th>
-
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCompletedOrders.length > 0 ? (
-              filteredCompletedOrders.map(order => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.userId}</td> {/* Display User ID */}
-                  <td>{order.address.firstName}</td> {/* Display User ID */}
-                  <td>{new Date(order.date).toLocaleDateString()}</td> {/* Display Date */}
-                  <td>{order.status}</td> {/* Display User ID */}
-
-
-                </tr>
-              ))
-            ) : (
+      {activeSection === 'completed' && (
+        <div className="order-table mt-5">
+          <h3>Completed Deliveries</h3>
+          <table className="table table-bordered">
+            <thead className="thead-light">
               <tr>
-                <td colSpan="3" className="text-center">No completed deliveries found matching your search.</td>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Status</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filteredCompletedOrders.length > 0 ? (
+                filteredCompletedOrders.map(order => (
+                  <tr key={order._id}>
+                    <td>{order._id}</td>
+                    <td>{order.userId}</td> {/* Display User ID */}
+                    <td>{order.address.firstName} {order.address.lastName}</td>
+                    <td>{new Date(order.date).toLocaleDateString()}</td>
+                    <td>{order.status}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">No completed deliveries found matching your search.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>

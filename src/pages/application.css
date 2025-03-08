@@ -201,3 +201,57 @@
   font-size: 14px;
   color: #7f8c8d;
 }
+/* application.css */
+
+/* General Button Style */
+.btn-toggle {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-toggle.sellers {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-toggle.sellers:hover {
+  background-color: #0056b3;
+}
+
+.btn-toggle.investors {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-toggle.investors:hover {
+  background-color: #218838;
+}
+
+.btn-toggle.inactive {
+  background-color: transparent;
+  border: 2px solid #ccc;
+  color: #007bff;
+}
+
+.btn-toggle.inactive:hover {
+  background-color: #f8f9fa;
+  color: #0056b3;
+}
+
+.d-flex {
+  justify-content: center;
+  gap: 20px;
+}
