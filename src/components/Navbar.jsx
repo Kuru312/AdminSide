@@ -13,6 +13,7 @@ function CollapsibleExample() {
           <Nav.Link as={Link} to="/DashBoard">Dashboard</Nav.Link>
           </Nav>
           <Nav>
+          <Nav.Link as={Link} to="/message">Community</Nav.Link>
             <Nav.Link as={Link} to="/complete">Delivery</Nav.Link>
             <Nav.Link as={Link} to="/courier">Courier</Nav.Link>
             <Nav.Link as={Link} to="/logistics">Logistics</Nav.Link>
