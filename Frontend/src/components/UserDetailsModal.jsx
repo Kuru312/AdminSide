@@ -9,7 +9,7 @@ const UserDetailsModal = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/users/${id}`);
+        const response = await fetch(`https://adminside-lo8s.onrender.com/users/${id}`);
         if (response.status === 404) {
           throw new Error('User not found');
         }

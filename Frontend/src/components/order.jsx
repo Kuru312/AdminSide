@@ -13,7 +13,7 @@ const Order = () => {
     // Fetch orders from the backend
     const fetchOrders = async () => {
       try {
-        const response = await fetch('orders');  // Replace with the correct backend endpoint
+        const response = await fetch('https://adminside-lo8s.onrender.com/orders');  // Replace with the correct backend endpoint
         const data = await response.json();
         setOrders(data);  // Store fetched orders data in 'orders' state
       } catch (error) {
