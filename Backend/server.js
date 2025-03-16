@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://admin-sideclient.vercel.app'];
+    const allowedOrigins = ['http://localhost:5173', 'https://courierpanel.vercel.app', 'https://admin-sideclient.vercel.app'];
 
     // Handle preflight requests
     if (!origin) {
