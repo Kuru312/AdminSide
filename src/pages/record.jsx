@@ -12,7 +12,7 @@ const AccountRecords = () => {
     const fetchData = async () => {
       try {
         // Fetch users data
-        const response = await fetch('http://localhost:5001/users'); // API endpoint for all users
+        const response = await fetch('https://admin-sideapi.vercel.app/users'); // API endpoint for all users
         const data = await response.json();
         setUsers(data); // Set users data
         setLoading(false); // Set loading state to false after data is fetched

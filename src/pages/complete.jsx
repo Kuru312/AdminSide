@@ -29,7 +29,7 @@ const CourierPanel = () => {
     // Fetch completed orders from the completeorders collection
     const fetchCompletedOrders = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/completeorders`);
+        const response = await fetch(`https://admin-sideapi.vercel.app/completeorders`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

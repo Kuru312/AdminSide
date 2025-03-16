@@ -11,7 +11,7 @@ const OrderDetails = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/orders/${id}`);
+        const response = await fetch(`https://admin-sideapi.vercel.app/orders/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Order not found');
