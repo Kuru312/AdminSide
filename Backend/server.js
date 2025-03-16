@@ -5,9 +5,6 @@ import nodemailer from 'nodemailer';
 
 const app = express();
 
-// Enable CORS for both frontend ports (5174 and 5175)
-const cors = require('cors');
-
 app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://admin-sideclient.vercel.app'];
