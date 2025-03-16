@@ -11,7 +11,7 @@ const SellerDetails = () => {
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/approveSellerInvestor/${id}`);
+        const response = await fetch(`https://adminside-lo8s.onrender.com/approveSellerInvestor/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Seller not found');

@@ -19,7 +19,7 @@ const Couriers = () => {
   useEffect(() => {
     const fetchCouriers = async () => {
       try {
-        const response = await fetch('http://localhost:5001/couriers');
+        const response = await fetch('https://adminside-lo8s.onrender.com/couriers');
         const data = await response.json();
         setCouriers(data);
       } catch (error) {

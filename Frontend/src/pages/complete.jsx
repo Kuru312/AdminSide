@@ -14,7 +14,7 @@ const CourierPanel = () => {
     // Fetch ongoing orders from the courierpanel collection
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/courierpanel/orders`); // Endpoint for ongoing deliveries
+        const response = await fetch(`https://adminside-lo8s.onrender.com/courierpanel/orders`); // Endpoint for ongoing deliveries
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -29,7 +29,7 @@ const CourierPanel = () => {
     // Fetch completed orders from the completeorders collection
     const fetchCompletedOrders = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/completeorders`);
+        const response = await fetch(`https://adminside-lo8s.onrender.com/completeorders`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

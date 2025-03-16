@@ -13,7 +13,7 @@ const CourierPanel = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/courierpanel/orders`);
+        const response = await fetch(`https://adminside-lo8s.onrender.com/courierpanel/orders`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -33,7 +33,7 @@ const CourierPanel = () => {
   const handleDelivered = async (orderId) => {
     setDeliveringOrderId(orderId); // Set the order being processed
     try {
-      const response = await fetch(`http://localhost:5001/moveToCompleteOrders/${orderId}`, {
+      const response = await fetch(`https://adminside-lo8s.onrender.com/moveToCompleteOrders/${orderId}`, {
         method: 'POST',
       });
 
