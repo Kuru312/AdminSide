@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
 
 const app = express();
 
@@ -26,6 +27,8 @@ mongoose.connect('mongodb+srv://louwisalfredn:09151225324Sam123@cluster0.2qnxu.m
     console.error('Error connecting to MongoDB:', err);
     process.exit(1);  // Exit the process with failure
   });
+
+
 
 // Seller and Investor Application Schema
 const sellerApplicationSchema = new mongoose.Schema({
@@ -661,6 +664,58 @@ app.get('/trades', async (req, res) => {
     res.status(200).json(allTrades);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching trades' });
+  }
+});
+
+const refundSchema = new mongoose.Schema({
+  name: String,
+  address: String,
+  email: String,
+  orderId: String,
+  note: String
+});
+
+const Refund = mongoose.model('Refund', refundSchema);
+
+// API endpoint to fetch refunds
+app.get('/refunds', async (req, res) => {
+  try {
+    const refunds = await Refund.find();
+    res.status(200).json(refunds);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching refunds: ' + error.message });
+  }
+});
+
+app.post('/refunds/:refundId/confirm', async (req, res) => {
+  try {
+    const { refundId } = req.params;
+    const refund = await Refund.findByIdAndUpdate(refundId, { status: 'confirmed' }, { new: true });
+    if (refund) {
+      sendEmail(refund.email, 'Refund Confirmed', 'Your refund has been confirmed. Please turn down the item to our warehouse in QC.');
+      res.status(200).send('Refund confirmed successfully');
+    } else {
+      res.status(404).send('Refund not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error confirming refund: ' + error.message);
+  }
+});
+
+
+// API endpoint to reject a refund
+app.post('/refunds/:refundId/reject', async (req, res) => {
+  try {
+    const { refundId } = req.params;
+    const refund = await Refund.findByIdAndUpdate(refundId, { status: 'rejected' }, { new: true });
+    if (refund) {
+      sendEmail(refund.email, 'Refund Rejected', 'Your refund request has been rejected.');
+      res.status(200).send('Refund rejected successfully');
+    } else {
+      res.status(404).send('Refund not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error rejecting refund: ' + error.message);
   }
 });
 

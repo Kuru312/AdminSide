@@ -82,7 +82,7 @@ const Order = () => {
                 <td>
                   {/* You can add action buttons here like Edit, Delete */}
                   <Link to={`/orderdetails/${order._id}`} className="btn btn-info me-2">View</Link>
-                  <button className="btn btn-info" onClick={() => handleShipOrder(order._id)}>Ship</button>
+                  {/* <button className="btn btn-info" onClick={() => handleShipOrder(order._id)}>Ship</button> */}
                 </td>
               </tr>
             ))}

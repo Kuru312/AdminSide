@@ -175,6 +175,7 @@ const Couriers = () => {
             <table className="table table-striped table-bordered">
               <thead className="thead-dark">
                 <tr>
+                  <th>ID</th>
                   <th>Name</th>
                   <th>Address</th>
                   <th>Plate Number</th>
@@ -185,6 +186,7 @@ const Couriers = () => {
               <tbody>
                 {couriers.map((courier) => (
                   <tr key={courier._id}>
+                    <td>{courier._id}</td>
                     <td>{courier.name}</td>
                     <td>{courier.address}</td>
                     <td>{courier.plate_number}</td>

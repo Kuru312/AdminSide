@@ -97,25 +97,19 @@ const Dashboard = () => {
 
       {/* Toggle Buttons for Sellers and Investors */}
       <div className="d-flex justify-content-center mb-4">
-        <button
-          className={`btn ${activeSection === 'sellers' ? 'btn-primary' : 'btn-outline-primary'}`}
-          onClick={() => setActiveSection('sellers')}
-        >
-          Seller Applications
-        </button>
-        <button
+        {/* <button
           className={`btn ${activeSection === 'investors' ? 'btn-primary' : 'btn-outline-primary'}`}
           onClick={() => setActiveSection('investors')}
         >
           Investor Applications
-        </button>
+        </button> */}
       </div>
 
       {/* Application for Seller Table Section */}
       {activeSection === 'sellers' && (
         <div className="table-responsive mt-5">
           <div className="d-flex justify-content-between mb-3">
-            <h3>Application for Seller</h3>
+            <h3>View Sellers</h3>
             <div>
               <i className="bx bx-search text-muted mr-3" style={{ fontSize: '1.5rem' }}></i>
               <i className="bx bx-filter text-muted" style={{ fontSize: '1.5rem' }}></i>
@@ -132,7 +126,6 @@ const Dashboard = () => {
                   <th>Business Name</th>
                   <th>Check</th>
                   <th></th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -146,14 +139,14 @@ const Dashboard = () => {
                         View Details
                       </Link>
                     </td>
-                    <td>
+                    {/* <td>
                       <button
                         className="btn btn-success"
                         onClick={() => handleApprove(user._id)} // Approve action handler
                       >
                         Approve
                       </button>
-                    </td>
+                    </td> */}
                     <td>
                       <button
                         className="btn btn-danger"
@@ -171,7 +164,7 @@ const Dashboard = () => {
       )}
 
       {/* Application for Investor Table Section */}
-      {activeSection === 'investors' && (
+      {/* {activeSection === 'investors' && (
         <div className="table-responsive mt-5">
           <div className="d-flex justify-content-between mb-3">
             <h3>Application for Investor</h3>
@@ -225,7 +218,7 @@ const Dashboard = () => {
             </table>
           )}
         </div>
-      )}
+      )} */}
 
       <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>

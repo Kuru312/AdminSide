@@ -10,9 +10,11 @@ const Logistics = () => {
   const [courierPanel, setCourierPanel] = useState([]); 
   const [trades, setTrades] = useState([]); // State to hold trades data
   const [users, setUsers] = useState([]); // State to hold user data
+  const [refunds, setRefunds] = useState([]); // State to hold refunds data
   const [selectedCouriers, setSelectedCouriers] = useState({});
   const [showLogistics, setShowLogistics] = useState(true); // State to toggle logistics visibility
   const [showTrades, setShowTrades] = useState(false); // State to toggle trades visibility
+  const [showRefunds, setShowRefunds] = useState(false); // State to toggle refunds visibility
 
   // Fetch orders from the backend
   const fetchOrders = async () => {
@@ -67,11 +69,24 @@ const Logistics = () => {
     }
   };
 
+  // Fetch refunds data from the backend
+  const fetchRefunds = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/refunds');
+      const data = await response.json();
+      setRefunds(data); // Set refunds data
+    } catch (error) {
+      console.error("Error fetching refunds:", error);
+      toast.error('Error fetching refunds.');
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
     fetchCouriers();
     fetchCourierPanel();
     fetchTrades();
+    fetchRefunds();
   }, []);
 
   // Get a list of courier IDs that are already assigned to any order in the courierPanel
@@ -154,6 +169,48 @@ const Logistics = () => {
     }
   };
 
+  const handleConfirmRefund = async (refundId) => {
+    try {
+      const response = await fetch(`http://localhost:5001/refunds/${refundId}/confirm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        toast.success('Refund confirmed successfully!');
+        fetchRefunds(); // Refresh the refunds data
+      } else {
+        toast.error('Failed to confirm refund.');
+      }
+    } catch (error) {
+      console.error("Error confirming refund:", error);
+      toast.error('Error confirming refund.');
+    }
+  };
+  
+  const handleRejectRefund = async (refundId) => {
+    try {
+      const response = await fetch(`http://localhost:5001/refunds/${refundId}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        toast.success('Refund rejected successfully!');
+        fetchRefunds(); // Refresh the refunds data
+      } else {
+        toast.error('Failed to reject refund.');
+      }
+    } catch (error) {
+      console.error("Error rejecting refund:", error);
+      toast.error('Error rejecting refund.');
+    }
+  };
+
   return (
     <main className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -161,16 +218,22 @@ const Logistics = () => {
         <div>
           <button 
             className="btn btn-primary me-2"
-            onClick={() => { setShowLogistics(true); setShowTrades(false); }}
+            onClick={() => { setShowLogistics(true); setShowTrades(false); setShowRefunds(false); }}
           >
             Logistics Management
           </button>
           <button 
-            className="btn btn-secondary"
-            onClick={() => { setShowTrades(true); setShowLogistics(false); }}
+            className="btn btn-secondary me-2"
+            onClick={() => { setShowTrades(true); setShowLogistics(false); setShowRefunds(false); }}
           >
             Trade History
           </button>
+          {/* <button 
+            className="btn btn-secondary"
+            onClick={() => { setShowRefunds(true); setShowLogistics(false); setShowTrades(false); }}
+          >
+            Return
+          </button> */}
         </div>
       </div>
 
@@ -242,8 +305,8 @@ const Logistics = () => {
       {/* Trades Section */}
       {showTrades && (
         <div className="order-table">
-        <table className="table table-bordered">
-          <thead className="thead-light">
+          <table className="table table-bordered">
+            <thead className="thead-light">
               <tr>
                 <th>Trade ID</th>
                 <th>Seller From</th>
@@ -251,7 +314,6 @@ const Logistics = () => {
                 <th>Status</th>
                 <th>Quantity</th>
                 <th>Created</th>
-
               </tr>
             </thead>
             <tbody>
