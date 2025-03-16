@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/users': 'http://localhost:5001',  // Proxy the /users endpoint to the backend server
+      '/api': 'https://adminside-lo8s.onrender.com',  // Proxy all requests starting with /api to the backend server
     },
   },
 });
