@@ -6,16 +6,29 @@ import nodemailer from 'nodemailer';
 const app = express();
 
 // Enable CORS for both frontend ports (5174 and 5175)
+const cors = require('cors');
+
 app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://admin-sideclient.vercel.app'];
-    if (allowedOrigins.includes(origin) || !origin) { // Allow requests from allowed origins or no origin (for local testing)
+
+    // Handle preflight requests
+    if (!origin) {
+      return callback(null, true);  // Allow requests with no origin (for local testing)
+    }
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);  // Allow the request
     } else {
+      console.error('CORS Error: Blocked origin:', origin); // Log blocked origin for debugging
       callback(new Error('CORS policy: Origin not allowed'), false);  // Block the request
     }
   }
 }));
+
+// Handle pre-flight request (OPTIONS method)
+app.options('*', cors());
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());  // You were missing this middleware to handle JSON data in POST requests
