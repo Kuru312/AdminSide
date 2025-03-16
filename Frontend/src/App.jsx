@@ -30,7 +30,7 @@ const App = () => {
           <Col>
             <Routes>
               {/* Home route for Record component */}
-              <Route path="/" element={<Record />} />
+              <Route path="/record" element={<Record />} />
               <Route path="/DashBoard" element={<Dashboard />} />
               <Route path="/order" element={<Order />} />
               <Route path="/SellerDetails" element={<Seller />} />
