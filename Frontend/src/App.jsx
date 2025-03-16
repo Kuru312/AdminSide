@@ -40,7 +40,7 @@ const App = () => {
               <Route path="/ASellerDetails/:id" element={<ASellerDetails />} />  {/* Update this route */}
               <Route path="/orderdetails/:id" element={<Orderdetails />} />
               <Route path="/logistics" element={<Logistics />} />  {/* Corrected route */}
-              <Route path="/" element={<Order />} />  {/* Corrected route */}
+              <Route path="/order" element={<Order />} />  {/* Corrected route */}
               <Route path="/Courier" element={<Courier />} />  {/* Corrected route */}
               <Route path="/Courierpanel" element={<CourierPanel courierId={courierId} />} />  {/* Corrected route */}
               <Route path="/complete" element={<Complete />} />  {/* Route for Complete component */}

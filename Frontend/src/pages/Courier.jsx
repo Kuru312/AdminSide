@@ -32,7 +32,7 @@ const Couriers = () => {
 
   const addCourier = async () => {
     try {
-      const response = await fetch('http://localhost:5001/couriers', {
+      const response = await fetch('https://adminside-lo8s.onrender.com/couriers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const Couriers = () => {
 
   const removeCourier = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5001/couriers/${id}`, {
+      const response = await fetch(`https://adminside-lo8s.onrender.com/couriers/${id}`, {
         method: 'DELETE',
       });
 
