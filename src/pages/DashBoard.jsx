@@ -17,7 +17,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch data from the backend for both seller and investor applications
-        const response = await fetch('https://admin-sideapi.vercel.app/users');  // Fetch all users data from backend
+        const response = await fetch('http://localhost:5001/users');  // Fetch all users data from backend
         const data = await response.json();  // Parse the JSON response
 
         // Filter users to get only those with non-null sellerApplication or investorApplication
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const handleApprove = async (userId) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/approve/${userId}`, {
+      const response = await fetch(`http://localhost:5001/approve/${userId}`, {
         method: 'POST',
       });
   
@@ -70,7 +70,7 @@ const Dashboard = () => {
   
   const handleReject = async (userId) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/users/${userId}`, {
+      const response = await fetch(`http://localhost:5001/users/${userId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {

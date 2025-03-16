@@ -11,7 +11,7 @@ const InvestorDetails = () => {
   useEffect(() => {
     const fetchInvestorDetails = async () => {
       try {
-        const response = await fetch(`https://admin-sideapi.vercel.app/users/${id}`);  // Fetch user details based on ID
+        const response = await fetch(`http://localhost:5001/users/${id}`);  // Fetch user details based on ID
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error('Investor not found');

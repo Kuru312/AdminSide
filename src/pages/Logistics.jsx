@@ -31,7 +31,7 @@ const Logistics = () => {
   // Fetch couriers from the backend
   const fetchCouriers = async () => {
     try {
-      const response = await fetch('https://admin-sideapi.vercel.app/couriers');
+      const response = await fetch('http://localhost:5001/couriers');
       const data = await response.json();
       setCouriers(data);
     } catch (error) {
@@ -43,7 +43,7 @@ const Logistics = () => {
   // Fetch courier panel data from the backend
   const fetchCourierPanel = async () => {
     try {
-      const response = await fetch('https://admin-sideapi.vercel.app/courierpanel');
+      const response = await fetch('http://localhost:5001/courierpanel');
       const data = await response.json();
       setCourierPanel(data);
     } catch (error) {
@@ -55,12 +55,12 @@ const Logistics = () => {
   // Fetch trades data from the backend
   const fetchTrades = async () => {
     try {
-      const response = await fetch('https://admin-sideapi.vercel.app/trades');
+      const response = await fetch('http://localhost:5001/trades');
       const data = await response.json();
       setTrades(data); // Set trades data
 
       // Now fetch the users to map sellerFrom and sellerTo to names
-      const userResponse = await fetch('https://admin-sideapi.vercel.app/users');
+      const userResponse = await fetch('http://localhost:5001/users');
       const userData = await userResponse.json();
       setUsers(userData); // Store users data
     } catch (error) {
@@ -72,7 +72,7 @@ const Logistics = () => {
   // Fetch refunds data from the backend
   const fetchRefunds = async () => {
     try {
-      const response = await fetch('https://admin-sideapi.vercel.app/refunds');
+      const response = await fetch('http://localhost:5001/refunds');
       const data = await response.json();
       setRefunds(data); // Set refunds data
     } catch (error) {
@@ -117,7 +117,7 @@ const Logistics = () => {
   // Remove courier assignment from the courierPanel collection
   const removeCourierAssignment = async (orderId, courierId) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/logistics/${orderId}/remove-courier`, {
+      const response = await fetch(`http://localhost:5001/logistics/${orderId}/remove-courier`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,14 +141,14 @@ const Logistics = () => {
   // Assign a courier to an order
   const assignCourier = async (orderId, courierId) => {
     try {
-      const courierResponse = await fetch(`https://admin-sideapi.vercel.app/couriers/${courierId}`);
+      const courierResponse = await fetch(`http://localhost:5001/couriers/${courierId}`);
       if (!courierResponse.ok) {
         throw new Error('Failed to fetch courier');
       }
       const courierData = await courierResponse.json();
       const courierName = courierData.name;
   
-      const response = await fetch(`https://admin-sideapi.vercel.app/logistics/${orderId}/assign-courier`, {
+      const response = await fetch(`http://localhost:5001/logistics/${orderId}/assign-courier`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ const Logistics = () => {
 
   const handleConfirmRefund = async (refundId) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/refunds/${refundId}/confirm`, {
+      const response = await fetch(`http://localhost:5001/refunds/${refundId}/confirm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ const Logistics = () => {
   
   const handleRejectRefund = async (refundId) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/refunds/${refundId}/reject`, {
+      const response = await fetch(`http://localhost:5001/refunds/${refundId}/reject`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

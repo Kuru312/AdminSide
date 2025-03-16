@@ -19,7 +19,7 @@ const Couriers = () => {
   useEffect(() => {
     const fetchCouriers = async () => {
       try {
-        const response = await fetch('https://admin-sideapi.vercel.app/couriers');
+        const response = await fetch('http://localhost:5001/couriers');
         const data = await response.json();
         setCouriers(data);
       } catch (error) {
@@ -32,7 +32,7 @@ const Couriers = () => {
 
   const addCourier = async () => {
     try {
-      const response = await fetch('https://admin-sideapi.vercel.app/couriers', {
+      const response = await fetch('http://localhost:5001/couriers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const Couriers = () => {
 
   const removeCourier = async (id) => {
     try {
-      const response = await fetch(`https://admin-sideapi.vercel.app/couriers/${id}`, {
+      const response = await fetch(`http://localhost:5001/couriers/${id}`, {
         method: 'DELETE',
       });
 

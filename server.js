@@ -8,7 +8,7 @@ const app = express();
 // Enable CORS for both frontend ports (5174 and 5175)
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://admin-sideapi.vercel.app'];
+    const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
     if (allowedOrigins.includes(origin) || !origin) { // Allow requests from allowed origins or no origin (for local testing)
       callback(null, true);  // Allow the request
     } else {
