@@ -6,9 +6,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/': {
-        target: 'https://admin-sideclient.vercel.app',  // Proxy all requests to the Vercel app
-        changeOrigin: true,  // Ensure proper origin headers
-        rewrite: (path) => path,  // Preserve the full path from the client-side
+        target: 'https://admin-sideclient.vercel.app',  // Proxy to the Vercel app
+        changeOrigin: true,  // Ensure the origin header matches the target
+        secure: true,  // If the target server is using HTTPS, ensure SSL is validated
+        rewrite: (path) => path,  // Keep the path intact
       },
     },
   },
