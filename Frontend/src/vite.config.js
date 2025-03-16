@@ -5,7 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://adminside-lo8s.onrender.com',  // Proxy all requests starting with /api to the backend server
+      '/': {
+        target: 'https://admin-sideclient.vercel.app',  // Proxy all requests to the Vercel app
+        changeOrigin: true,  // Ensure proper origin headers
+        rewrite: (path) => path,  // Preserve the full path from the client-side
+      },
     },
   },
 });
